@@ -749,7 +749,7 @@ def box_edge(data, o, p, width, top):
     head, msg = head_boxes(data, o, p, width)
     if not head:
         return ""
-    left, right = ("\u256d", "\u256e") if top else ("\u2570", "\u256f")
+    left, right = ("\u250c", "\u2510") if top else ("\u2514", "\u2518")
     out = p(o.get("box-color", "protocol"), left + "\u2500" * (vis_width(head) + 2) + right)
     if msg:
         out += " " + p(o.get("prompt-box-color", "cyan"), left + "\u2500" * (vis_width(msg) + 2) + right)

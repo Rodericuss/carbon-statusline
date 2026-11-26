@@ -336,8 +336,8 @@ class Robustness(Base):
              "prompt_cache": {"hit_ratio": 0.94}}
         raw = run("render", p, cols=150, raw=True)
         lines = ANSI.sub("", raw).split("\n")
-        self.assertEqual(lines[:3], ["╭────────────╮", "│ Opus │ 󰉋 / │", "╰────────────╯"])
-        self.assertIn("38;2;61;219;217m╭", raw)  # border in the protocol color
+        self.assertEqual(lines[:3], ["┌────────────┐", "│ Opus │ 󰉋 / │", "└────────────┘"])
+        self.assertIn("38;2;61;219;217m┌", raw)  # border in the protocol color
         self.assertRegex(lines[3], r"^CTX \S+ 42% 84k/200k │ 5H \S+ 36% 2h1\dm │ 7D \S+ 78% │ CACHE 94%$")
         self.assertEqual(len(lines[3]), 150 - 7)
         self.assertEqual(len(lines), 4)  # no transcript -> no prompt box, no extra rows
@@ -354,7 +354,7 @@ class Robustness(Base):
         self.assertEqual(len(lines[0]), len(lines[1]))
         self.assertEqual(len(lines[0]), len(lines[2]))
         self.assertLessEqual(len(lines[1]), 100 - 7)
-        self.assertIn("38;2;61;219;217m╭", raw.split("╮", 1)[1])  # second box in cyan
+        self.assertIn("38;2;61;219;217m┌", raw.split("┐", 1)[1])  # second box in cyan
         self.assertIn("38;2;198;198;198mfix the bar", raw)  # message text keeps text2
         for seg in ("boxtop", "boxmid", "boxbot"):
             self.assertEqual(run(seg, p, cols=100), lines[("boxtop", "boxmid", "boxbot").index(seg)])
@@ -365,7 +365,7 @@ class Robustness(Base):
         lines = run("render", {"model": {"display_name": "Opus 5.5"}, "workspace": {"current_dir": d}},
                     "--git-ttl", "0", cols=150).split("\n")
         self.assertEqual(len(lines[0]), len(lines[2]))
-        self.assertEqual(lines[1][len(lines[0]) - 1], "│")  # right border closes under ╮
+        self.assertEqual(lines[1][len(lines[0]) - 1], "│")  # right border closes under ┐
 
     def test_fill_right_aligns_git(self):
         d = tempfile.mkdtemp(dir=self.tmp)
