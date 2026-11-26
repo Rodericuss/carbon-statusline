@@ -1,0 +1,79 @@
+{
+  "version": 4,
+  "colorLevel": 3,
+  "defaultPadding": " ",
+  "defaultPaddingSide": "both",
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "minimalistMode": false,
+  "gitCacheTtlSeconds": 2,
+  "terminalWidthCacheTtlSeconds": 5,
+  "customCommandCacheTtlSeconds": 0,
+  "lines": [
+    [
+      {
+        "id": "boxtop",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ boxtop --theme g100 --git-ttl 2 --box-color protocol",
+        "preserveColors": true,
+        "timeout": 800
+      }
+    ],
+    [
+      {
+        "id": "boxmid",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ boxmid --theme g100 --git-ttl 2 --box-color protocol",
+        "preserveColors": true,
+        "timeout": 800
+      },
+      {
+        "id": "flex",
+        "type": "flex-separator"
+      },
+      {
+        "id": "gitstat",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ gitstat --theme g100 --git-ttl 2",
+        "preserveColors": true,
+        "timeout": 800
+      }
+    ],
+    [
+      {
+        "id": "boxbot",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ boxbot --theme g100 --git-ttl 2 --box-color protocol",
+        "preserveColors": true,
+        "timeout": 800
+      }
+    ],
+    [
+      {
+        "id": "telemetry",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ telemetry --fill --theme g100 --order ctx,5h,7d,cache --ctx-warn 60 --ctx-crit 85 --5h-warn 70 --5h-crit 90 --7d-warn 70 --7d-crit 90 --scope auto",
+        "preserveColors": true,
+        "timeout": 500
+      }
+    ],
+    [
+      {
+        "id": "rule",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ rule --theme g100",
+        "preserveColors": true,
+        "timeout": 300
+      }
+    ],
+    [
+      {
+        "id": "prompt",
+        "type": "custom-command",
+        "commandPath": "__CARBON__ prompt --theme g100",
+        "preserveColors": true,
+        "timeout": 800
+      }
+    ]
+  ]
+}
