@@ -484,10 +484,9 @@ def seg_prompt(data, o, p, width):
         room = min(room, int(num(o, "max", room)))
     body = truncate(text, room)
     chip = paste_chip(p, o.get("paste-color", "protocol")) if o.get("paste-box") else p("text2", "[paste]")
-    color = o.get("text-color", "text2")
-    out = "".join(chip if i % 2 else p(color, part)
+    out = "".join(chip if i % 2 else p("text2", part)
                   for i, part in enumerate(re.split(r"(\[paste\])", body)) if part)
-    return (p(o.get("icon-color", "info"), icon) if icon else "") + out
+    return (p("info", icon) if icon else "") + out
 
 
 def paste_chip(p, token):
@@ -736,8 +735,7 @@ def prompt_box_content(data, o, p, width, head_w):
     room = width - head_w - 1 - 4 - (git_w + 3 if git_w else 0)
     if room < 10:
         return ""
-    color = o.get("prompt-box-color", "cyan")
-    return seg_prompt(data, {**o, "text-color": color, "icon-color": color}, p, room)
+    return seg_prompt(data, o, p, room)
 
 
 def head_boxes(data, o, p, width):

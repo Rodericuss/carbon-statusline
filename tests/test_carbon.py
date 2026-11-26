@@ -355,7 +355,7 @@ class Robustness(Base):
         self.assertEqual(len(lines[0]), len(lines[2]))
         self.assertLessEqual(len(lines[1]), 100 - 7)
         self.assertIn("38;2;61;219;217m╭", raw.split("╮", 1)[1])  # second box in cyan
-        self.assertIn("38;2;61;219;217mfix the bar", raw)  # message text in cyan
+        self.assertIn("38;2;198;198;198mfix the bar", raw)  # message text keeps text2
         for seg in ("boxtop", "boxmid", "boxbot"):
             self.assertEqual(run(seg, p, cols=100), lines[("boxtop", "boxmid", "boxbot").index(seg)])
 

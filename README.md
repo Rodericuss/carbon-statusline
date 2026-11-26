@@ -10,7 +10,7 @@ CTX █████████████████▋░░░░░░░�
 ```
 
 The model, directory and branch sit in a box (`boxtop`/`boxmid`/`boxbot`). Its border uses the
-app's protocol color `#3DDBD9` (`--box-color`), and its width follows the content. The last prompt sits in a second box right after it, in cyan
+app's protocol color `#3DDBD9` (`--box-color`), and its width follows the content. The last prompt sits in a second box right after it with a cyan border
 (`--prompt-box-color`, `--no-prompt-box` to hide), truncated to the room left before the git
 stats; below 10 cells it is dropped. Git stats are
 right-aligned with the native `flex-separator`. `telemetry --fill` splits the free columns
@@ -82,7 +82,7 @@ from the same code in one process. Its options go on its own command line, for e
 | `--no-reset` / `--reset` | meters: hide reset details. telemetry row: hide 5H / show 7D countdown | shown |
 | `--scope auto\|session\|request` | cache metric. `auto` falls back to the last request and labels it `CACHE·REQ` | auto |
 | `--max N` | prompt length cap (cells) | width |
-| `--prompt-box-color T` / `--no-prompt-box` | prompt box color token / hide it | cyan / shown |
+| `--prompt-box-color T` / `--no-prompt-box` | prompt box border color token / hide it | cyan / shown |
 | `--no-icons` | drop Nerd Font glyphs | icons on |
 | `--git-ttl S` | git cache seconds | 2 |
 | `--no-git-detail` | branch only | off |
