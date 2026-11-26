@@ -6,7 +6,7 @@ Usage (inside a ccstatusline `commandPath`):
 
 Segments:
     render     all rows in one process (standalone mode, no ccstatusline)
-               --lines "model,workspace|telemetry|rule|prompt"
+               --lines "boxtop|boxmid>gitstat|boxbot|telemetry"
     workspace  "󰉋 heimdall │  main +128 −32 3 modified · ↑2"
     telemetry  "CTX ████░░░░░░ 42% │ 5H ██░░░ 36% 2h14m │ 7D 78% │ CACHE 94%"
                --order ctx,5h,7d,cache   per-metric: --ctx-width --5h-warn ...
@@ -484,9 +484,10 @@ def seg_prompt(data, o, p, width):
         room = min(room, int(num(o, "max", room)))
     body = truncate(text, room)
     chip = paste_chip(p, o.get("paste-color", "protocol")) if o.get("paste-box") else p("text2", "[paste]")
-    out = "".join(chip if i % 2 else p("text2", part)
+    color = o.get("text-color", "text2")
+    out = "".join(chip if i % 2 else p(color, part)
                   for i, part in enumerate(re.split(r"(\[paste\])", body)) if part)
-    return (p("info", icon) if icon else "") + out
+    return (p(o.get("icon-color", "info"), icon) if icon else "") + out
 
 
 def paste_chip(p, token):
@@ -727,13 +728,34 @@ def head_content(data, o, p, width):
                  seg_workspace(data, {**o, "no-git-detail": True}, p, width)], p)
 
 
-def box_edge(data, o, p, width, top):
-    inner = vis_width(head_content(data, o, p, width))
-    if not inner:
+def prompt_box_content(data, o, p, width, head_w):
+    """Last prompt for the second box of row 1: fits between the identity box and gitstat."""
+    if o.get("no-prompt-box"):
         return ""
-    color = o.get("box-color", "protocol")
+    git_w = vis_width(seg_gitstat(data, o, p, width))
+    room = width - head_w - 1 - 4 - (git_w + 3 if git_w else 0)
+    if room < 10:
+        return ""
+    color = o.get("prompt-box-color", "cyan")
+    return seg_prompt(data, {**o, "text-color": color, "icon-color": color}, p, room)
+
+
+def head_boxes(data, o, p, width):
+    head = head_content(data, o, p, width)
+    if not head:
+        return "", ""
+    return head, prompt_box_content(data, o, p, width, vis_width(head) + 4)
+
+
+def box_edge(data, o, p, width, top):
+    head, msg = head_boxes(data, o, p, width)
+    if not head:
+        return ""
     left, right = ("\u256d", "\u256e") if top else ("\u2570", "\u256f")
-    return p(color, left + "\u2500" * (inner + 2) + right)
+    out = p(o.get("box-color", "protocol"), left + "\u2500" * (vis_width(head) + 2) + right)
+    if msg:
+        out += " " + p(o.get("prompt-box-color", "cyan"), left + "\u2500" * (vis_width(msg) + 2) + right)
+    return out
 
 
 def seg_boxtop(data, o, p, width):
@@ -745,17 +767,21 @@ def seg_boxbot(data, o, p, width):
 
 
 def seg_boxmid(data, o, p, width):
-    inner = head_content(data, o, p, width)
-    if not inner:
+    head, msg = head_boxes(data, o, p, width)
+    if not head:
         return ""
     bar_ = p(o.get("box-color", "protocol"), "\u2502")
-    return f"{bar_} {inner} {bar_}"
+    out = f"{bar_} {head} {bar_}"
+    if msg:
+        mbar = p(o.get("prompt-box-color", "cyan"), "\u2502")
+        out += f" {mbar} {msg} {mbar}"
+    return out
 
 
 def seg_render(data, o, p, width):
     """Standalone renderer: every row in one process, no ccstatusline.
     Row spec: comma-separated segments, '>' starts the right-aligned group, '|' separates rows."""
-    spec = str(o.get("lines", "boxtop|boxmid>gitstat|boxbot|telemetry|rule|prompt"))
+    spec = str(o.get("lines", "boxtop|boxmid>gitstat|boxbot|telemetry"))
     ro = dict(o)
     ro.setdefault("fill", True)
     rows = []

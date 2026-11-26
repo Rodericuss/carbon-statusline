@@ -3,16 +3,16 @@
 IBM Carbon Gray 100 status line on top of ccstatusline (pinned to 2.2.34).
 
 ```
-╭────────────────────────────────╮
-│ Opus 5.5 │ 󰉋 heimdall │  main │                         +128 −32 3 modified · ↑2
-╰────────────────────────────────╯
+╭────────────────────────────────╮ ╭──────────────────────────────────────╮
+│ Opus 5.5 │ 󰉋 heimdall │  main │ │ 󰍩 Refactor the event pipeline to us… │  +128 −32 3 modified · ↑2
+╰────────────────────────────────╯ ╰──────────────────────────────────────╯
 CTX █████████████████▋░░░░░░░░░░░ 42% 84k/200k │ 5H ███████▎░░░░░ 36% 2h14m │ 7D ███████████▋░░ 78% 3d10h │ CACHE 94%
-──────────────────────────────────────────────────────────────────────────────────────────────
-󰍩 Refactor the event pipeline to use supervised GenServers…
 ```
 
 The model, directory and branch sit in a box (`boxtop`/`boxmid`/`boxbot`). Its border uses the
-app's protocol color `#3DDBD9` (`--box-color`), and its width follows the content. Git stats are
+app's protocol color `#3DDBD9` (`--box-color`), and its width follows the content. The last prompt sits in a second box right after it, in cyan
+(`--prompt-box-color`, `--no-prompt-box` to hide), truncated to the room left before the git
+stats; below 10 cells it is dropped. Git stats are
 right-aligned with the native `flex-separator`. `telemetry --fill` splits the free columns
 between the CTX, 5H and 7D bars (2:1:1). `--bar-max N` caps the bars. When the bars would be
 narrower than 4 cells, the row falls back to the compact tiers.
@@ -55,7 +55,7 @@ ccstatusline's startup alone takes ~135 ms. It also runs each Custom Command ins
 several lines: ccstatusline measures them as one line and truncates. So each stacked
 row is its own spawn. The standalone engine renders the same output
 from the same code in one process. Its options go on its own command line, for example
-`carbon.py render --lines "model,workspace|telemetry|prompt" --no-icons`.
+`carbon.py render --lines "model,workspace|telemetry|prompt" --no-icons` (default: `boxtop|boxmid>gitstat|boxbot|telemetry`).
 
 ## What is native and what is custom
 
@@ -82,11 +82,12 @@ from the same code in one process. Its options go on its own command line, for e
 | `--no-reset` / `--reset` | meters: hide reset details. telemetry row: hide 5H / show 7D countdown | shown |
 | `--scope auto\|session\|request` | cache metric. `auto` falls back to the last request and labels it `CACHE·REQ` | auto |
 | `--max N` | prompt length cap (cells) | width |
+| `--prompt-box-color T` / `--no-prompt-box` | prompt box color token / hide it | cyan / shown |
 | `--no-icons` | drop Nerd Font glyphs | icons on |
 | `--git-ttl S` | git cache seconds | 2 |
 | `--no-git-detail` | branch only | off |
 
-To hide the horizontal rule, delete the third line in `ccstatusline/settings.json`.
+The `rule` and standalone `prompt` segments still exist; add them back as rows if you want them.
 
 ## Responsive tiers (usable width = terminal − 7)
 

@@ -340,8 +340,24 @@ class Robustness(Base):
         self.assertIn("38;2;61;219;217m╭", raw)  # border in the protocol color
         self.assertRegex(lines[3], r"^CTX \S+ 42% 84k/200k │ 5H \S+ 36% 2h1\dm │ 7D \S+ 78% │ CACHE 94%$")
         self.assertEqual(len(lines[3]), 150 - 7)
-        self.assertEqual(set(lines[4]), {"─"})
-        self.assertEqual(len(lines), 5)  # no transcript -> no prompt row
+        self.assertEqual(len(lines), 4)  # no transcript -> no prompt box, no extra rows
+
+    def test_prompt_box_beside_identity_box(self):
+        tmp = tempfile.mkdtemp(dir=self.tmp)
+        path = transcript(os.path.join(tmp, "t.jsonl"), [user("fix the bar " + "x" * 300)])
+        p = {"model": {"display_name": "Opus"}, "workspace": {"current_dir": "/"},
+             "transcript_path": path, "session_id": "pbox"}
+        raw = run("render", p, cols=100, raw=True)
+        lines = ANSI.sub("", raw).split("\n")
+        self.assertTrue(lines[1].startswith("│ Opus │ 󰉋 / │ │ 󰍩 fix the bar x"))
+        self.assertTrue(lines[1].endswith("… │"))
+        self.assertEqual(len(lines[0]), len(lines[1]))
+        self.assertEqual(len(lines[0]), len(lines[2]))
+        self.assertLessEqual(len(lines[1]), 100 - 7)
+        self.assertIn("38;2;61;219;217m╭", raw.split("╮", 1)[1])  # second box in cyan
+        self.assertIn("38;2;61;219;217mfix the bar", raw)  # message text in cyan
+        for seg in ("boxtop", "boxmid", "boxbot"):
+            self.assertEqual(run(seg, p, cols=100), lines[("boxtop", "boxmid", "boxbot").index(seg)])
 
     def test_box_edges_match_content(self):
         d = tempfile.mkdtemp(dir=self.tmp)

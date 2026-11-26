@@ -56,24 +56,6 @@
         "preserveColors": true,
         "timeout": 500
       }
-    ],
-    [
-      {
-        "id": "rule",
-        "type": "custom-command",
-        "commandPath": "__CARBON__ rule --theme g100",
-        "preserveColors": true,
-        "timeout": 300
-      }
-    ],
-    [
-      {
-        "id": "prompt",
-        "type": "custom-command",
-        "commandPath": "__CARBON__ prompt --theme g100",
-        "preserveColors": true,
-        "timeout": 800
-      }
     ]
   ]
 }
